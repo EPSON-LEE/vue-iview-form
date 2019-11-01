@@ -2,9 +2,17 @@
   <div class="wrapper">
     <Row>
       <i-col class="border left" span="8">
-        <form-item-engine :config="config" :rules="rules" :model="formValues" />
+        <form-item-engine :config="config" :rules="rules" :model="formValues">
+          <div slot="append" class="submit-item">
+            <Button type="primary" @on-click="showResultModal = true">
+              提交
+            </Button>
+          </div>
+        </form-item-engine>
       </i-col>
-      <i-col class="border left" span="8"> </i-col>
+      <i-col class="border left" span="8">
+        <Input type="textarea" :rows="35" v-model="configShow" />
+      </i-col>
       <i-col class="border" span="8"> </i-col>
     </Row>
   </div>
@@ -15,25 +23,43 @@ export default {
   components: {
     FormItemEngine
   },
+  watch: {
+    config: {
+      deep: true,
+      immediate: true,
+      handler(value) {
+        debugger;
+        console.log(value);
+      }
+    }
+  },
+  computed: {
+    configShow: function() {
+      debugger;
+      return JSON.stringify(this.config, null, 4);
+    }
+  },
   data() {
     return {
       formValues: {
-        name: "11",
+        name: "",
         city: 1,
-        fruit: []
+        fruit: [],
+        article: "",
+        animal: ""
       },
       rules: {
         name: [
           {
             required: true,
-            message: "The name cannot be empty",
+            message: "姓名不能为空",
             trigger: "blur"
           }
         ],
         city: [
           {
             required: true,
-            message: "Please select the city",
+            message: "城市不能为空",
             trigger: "change"
           }
         ]
@@ -116,6 +142,41 @@ export default {
               },
               {
                 label: "🍊"
+              }
+            ]
+          }
+        },
+        {
+          key: "article",
+          label: "文章",
+          prop: "article",
+          component: {
+            $type: "Input",
+            value: 1,
+            attrs: {},
+            on: {},
+            props: {
+              type: "textarea",
+              placeholder: "请填写文章"
+            }
+          }
+        },
+        {
+          key: "animal",
+          label: "动物",
+          prop: "animal",
+          component: {
+            $type: "RadioGroup",
+            props: {},
+            items: [
+              {
+                label: "老虎🐯"
+              },
+              {
+                label: "大象🐘"
+              },
+              {
+                label: "蛇🐍"
               }
             ]
           }

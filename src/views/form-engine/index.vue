@@ -47,7 +47,6 @@ export default {
   },
   render(h) {
     let vm = this;
-    // 具体渲染逻辑
     return h(
       "Form",
       {
@@ -75,9 +74,6 @@ export default {
       this.config.forEach(({ tag, detail = {} }) => {
         console.log(tag);
         let { defaultValue = null, name } = detail;
-        // if (tag === "el-checkbox" || (tag === "el-select" && detail.multiple)) {
-        //   defaultValue = defaultValue != null ? defaultValue : [];
-        // }
         defaultValues[name] = defaultValue;
       });
 
@@ -170,30 +166,34 @@ export default {
           })
         );
         children = [checkbox];
-      } else if (tag === "el-radio") {
-        const radios = (props.items || []).map(option => {
-          option = {
-            name: props.name,
-            ...option
-          };
-          return h(
-            tag,
-            {
+      } else if (tag === "RadioGroup") {
+        const radioGroup = h(
+          "RadioGroup",
+          {
+            attrs: {
+              ...vm.filterAttrs(props)
+            },
+            props: {
+              value,
+              ...props
+            },
+            on: {
+              ...modelEvents
+            }
+          },
+          (component.items || []).map(option => {
+            return h("Radio", {
               attrs: {
                 ...vm.filterAttrs(option)
               },
               props: {
-                value,
-                ...option
-              },
-              on: {
-                ...modelEvents
+                key: option.label,
+                label: option.label
               }
-            },
-            [option.text]
-          );
-        });
-        children = [...radios];
+            });
+          })
+        );
+        children = [radioGroup];
       } else {
         const input = h(tag || "Input", {
           attrs: {
@@ -214,7 +214,7 @@ export default {
         "FormItem",
         {
           props: {
-            prop: name,
+            prop: formItemName,
             label: label
           }
         },
